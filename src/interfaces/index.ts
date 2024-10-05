@@ -6,8 +6,19 @@ export type ILink = {
 
 
 export type ILinkShort = {
+    /**
+     * Node id of source.
+     */
     s: number;
+
+    /**
+     * Node id of target.
+     */
     t: number;
+
+    /**
+     * Weight of the link.
+     */
     w: 0 | 1;
 };
 

@@ -17,6 +17,9 @@ describe('Generator', () => {
                 expect(gene.source).toBeTypeOf('number');
                 expect(gene.target).toBeTypeOf('number');
                 expect(gene.weight).toBeTypeOf('boolean');
+
+                expect(gene.source).toBeLessThan(32);
+                expect(gene.target).toBeLessThan(32);
             } catch (error) {
                 reject(error)
             }
@@ -41,12 +44,43 @@ describe('Generator', () => {
                 expect(gene.t).toBeTypeOf('number');
                 expect(gene.w).toBeTypeOf('number');
                 expect([0, 1]).toContain(gene.w);
+
+                expect(gene.s).toBeLessThan(32);
+                expect(gene.t).toBeLessThan(32);
             } catch (error) {
                 reject(error);
             }
         });
 
         stream.on("end", () => {
+            resolve();
+        });
+    }));
+
+    it('networkBoundarySize:5, gene:10000, short mode', () => new Promise<void>((resolve) => {
+        const stream = new ChromosomeGenerator({ gene: 10000, networkBoundarySize: 5 });
+
+        let count = 0;
+        stream.on("data", () => {
+            count++;
+        });
+
+        stream.on("end", () => {
+            expect(count).toEqual(10000);
+            resolve();
+        });
+    }));
+
+    it('networkBoundarySize:20, gene:1000000, short mode', () => new Promise<void>((resolve) => {
+        const stream = new ChromosomeGenerator({ gene: 1000000, networkBoundarySize: 5 });
+
+        let count = 0;
+        stream.on("data", () => {
+            count++;
+        });
+
+        stream.on("end", () => {
+            expect(count).toEqual(1000000);
             resolve();
         });
     }));
