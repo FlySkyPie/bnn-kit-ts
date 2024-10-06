@@ -17,9 +17,38 @@ describe('Perceptron', () => {
 
     it('compute case 1', () => {
         const perceptron = new Perceptron(10);
+        perceptron.addLink(0, 1023, false);
+
+        expect(perceptron.compute(new Uint8Array([0x01]))[0]).toEqual(0x80);
+    });
+
+    it('compute case 2', () => {
+        const perceptron = new Perceptron(10);
         perceptron.addLink(0, 500, true)
             .addLink(500, 1023, true);
 
         expect(perceptron.compute(new Uint8Array([0x01]))[0]).toEqual(0x80);
+    });
+
+    it(`Link shound't override input value`, () => {
+        const perceptron = new Perceptron(10);
+        perceptron.addLink(0, 1, true)
+            .addLink(1, 1023, false);
+
+        const dummyInput = new Uint8Array([0x00]);
+
+        expect(perceptron.compute(dummyInput)[0]).toEqual(0x00);
+    });
+
+    it(`Test recurrent connection`, () => {
+        const perceptron = new Perceptron(10);
+        perceptron.addLink(1023, 1023, true);
+
+        const dummyInput = new Uint8Array([0x00]);
+
+        expect(perceptron.compute(dummyInput)[0]).toEqual(0x80);
+        expect(perceptron.compute(dummyInput)[0]).toEqual(0x00);
+        expect(perceptron.compute(dummyInput)[0]).toEqual(0x80);
+        expect(perceptron.compute(dummyInput)[0]).toEqual(0x00);
     });
 });
